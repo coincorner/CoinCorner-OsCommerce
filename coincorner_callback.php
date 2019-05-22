@@ -80,7 +80,6 @@ if($API_Key_Request == $Api_Key) {
     default:
       $cc_order_status = NULL;
   }
-
     //UPDATE order to status returned from callback request
       tep_db_query("update ". TABLE_ORDERS . " set orders_status = " . $cc_order_status . " where orders_id = " . intval($order_id));
 
