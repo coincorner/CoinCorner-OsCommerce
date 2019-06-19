@@ -72,8 +72,9 @@ class coincorner
     //Creates params array which will be passed into create order request
     $params = array(
       'OrderId'         => $insert_id,
-      'Amount'            => $order->info['total'],
-      'Currency'         => $order->info['currency'],
+      'InvoiceAmount'            => $order->info['total'],
+      'SettleCurrency'         => MODULE_PAYMENT_COINCORNER_SETTLE_CURRENCY,
+      'InvoiceCurrency'         => MODULE_PAYMENT_COINCORNER_INVOICE_CURRENCY,
       'SuccessRedirectURL' => tep_href_link(FILENAME_CHECKOUT_SUCCESS),
       'FailRedirectURL' => tep_href_link(FILENAME_CHECKOUT_PAYMENT),
       'NotificationURL' => $callback,
@@ -153,6 +154,8 @@ class coincorner
     tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('CoinCorner APP ID', 'MODULE_PAYMENT_COINCORNER_APP_ID', '0', 'Your CoinCorner APP ID', '6', '0', now())");
     tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('CoinCorner API Key', 'MODULE_PAYMENT_COINCORNER_API_KEY', '0', 'Your CoinCorner API Key', '6', '0', now())");
     tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('CoinCorner APP Secret', 'MODULE_PAYMENT_COINCORNER_API_SECRET', '0', 'Your CoinCorner API Secret', '6', '0', now())");
+    tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Invoice Currency', 'MODULE_PAYMENT_COINCORNER_INVOICE_CURRENCY', 'GBP', 'The currency you want to invoice your customer in', '6', '0', now())");
+    tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Settle Currency', 'MODULE_PAYMENT_COINCORNER_SETTLE_CURRENCY', 'GBP', 'The currency you want the order to be settled in (Only GBP Currency supported)', '6', '0', now())");
     tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Sort order of display.', 'MODULE_PAYMENT_COINCORNER_SORT_ORDER', '0', 'Sort order of display. Lowest is displayed first.', '6', '8', now())");
     tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, use_function, date_added) values ('Set Pending Payment Status', 'MODULE_PAYMENT_COINCORNER_PENDING_PAYMENT_STATUS_ID', 0, 'Status for your order when awaiting payment', '6', '5', 'tep_cfg_pull_down_order_statuses(', 'tep_get_order_status_name', now())");
     tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, use_function, date_added) values ('Set Pending Confirmation Status', 'MODULE_PAYMENT_COINCORNER_PENDING_CONFIRMATION_STATUS_ID', 1, 'Status for your order when your order is pending confirmation', '6', '6', 'tep_cfg_pull_down_order_statuses(', 'tep_get_order_status_name', now())");
@@ -176,6 +179,8 @@ class coincorner
       'MODULE_PAYMENT_COINCORNER_APP_ID',
       'MODULE_PAYMENT_COINCORNER_API_KEY',
       'MODULE_PAYMENT_COINCORNER_API_SECRET',
+      'MODULE_PAYMENT_COINCORNER_INVOICE_CURRENCY',
+      'MODULE_PAYMENT_COINCORNER_SETTLE_CURRENCY',
       'MODULE_PAYMENT_COINCORNER_SORT_ORDER',
       'MODULE_PAYMENT_COINCORNER_PENDING_PAYMENT_STATUS_ID',
       'MODULE_PAYMENT_COINCORNER_PENDING_CONFIRMATION_STATUS_ID',
