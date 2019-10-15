@@ -47,41 +47,50 @@ if($API_Key_Request == $Api_Key) {
   $response  = json_decode(curl_exec($curl), true);
   $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
   
-  //Set order status variable to orderstatus based on request
-   //Set order status variable to orderstatus based on request
-  switch ($response["OrderStatus"]) {
-    case 0:
-    $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_PAYMENT_STATUS_ID;
-    break;
-    case 1:
-    $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_CONFIRMATION_STATUS_ID;
-    break;
-    case 2:
-      $cc_order_status = MODULE_PAYMENT_COINCORNER_PAID_STATUS_ID;
-      break;
-    case -1:
-      $cc_order_status = MODULE_PAYMENT_COINCORNER_CANCELED_STATUS_ID;
-      break;
-    case -2:
-      $cc_order_status = MODULE_PAYMENT_COINCORNER_EXPIRED_STATUS_ID;
-      break;
-    case -3:
-    $cc_order_status = MODULE_PAYMENT_COINCORNER_EXPIRED_STATUS_ID;
-      break;
-    case -4:
-      $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_REFUND_STATUS_ID;
-      break;
-      case -5:
-      $cc_order_status = MODULE_PAYMENT_COINCORNER_REFUNDED_STATUS_ID;
-      break;
-      case -99:
-      $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_INVOICE_ORDER_STATUS_ID;
-      break;
-    default:
-      $cc_order_status = NULL;
+  if($http_status != 200) {
+    http_response_code(400);
+    return false;
   }
-    //UPDATE order to status returned from callback request
-      tep_db_query("update ". TABLE_ORDERS . " set orders_status = " . $cc_order_status . " where orders_id = " . intval($order_id));
+  else {
 
+    //Set order status variable to orderstatus based on request
+    switch ($response["OrderStatus"]) {
+      case 0:
+      $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_PAYMENT_STATUS_ID;
+      break;
+      case 1:
+      $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_CONFIRMATION_STATUS_ID;
+      break;
+      case 2:
+        $cc_order_status = MODULE_PAYMENT_COINCORNER_PAID_STATUS_ID;
+        break;
+      case -1:
+        $cc_order_status = MODULE_PAYMENT_COINCORNER_CANCELED_STATUS_ID;
+        break;
+      case -2:
+        $cc_order_status = MODULE_PAYMENT_COINCORNER_EXPIRED_STATUS_ID;
+        break;
+      case -3:
+      $cc_order_status = MODULE_PAYMENT_COINCORNER_EXPIRED_STATUS_ID;
+        break;
+      case -4:
+        $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_REFUND_STATUS_ID;
+        break;
+        case -5:
+        $cc_order_status = MODULE_PAYMENT_COINCORNER_REFUNDED_STATUS_ID;
+        break;
+        case -99:
+        $cc_order_status = MODULE_PAYMENT_COINCORNER_PENDING_INVOICE_ORDER_STATUS_ID;
+        break;
+      default:
+        $cc_order_status = NULL;
+      }
+
+      //UPDATE order to status returned from callback request
+        tep_db_query("update ". TABLE_ORDERS . " set orders_status = " . $cc_order_status . " where orders_id = " . intval($order_id));
+
+  }
+
+  
 }
 ?>

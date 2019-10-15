@@ -115,17 +115,28 @@ class coincorner
 
      $response = json_decode(curl_exec($curl), TRUE);
      $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-     $invoice = explode("/Checkout/", $response);
-     if (count($invoice) < 2) {
-      $message = "CoinCorner returned an error. Error: {$response}";
-      tep_db_query("update ". TABLE_ORDERS . " set orders_status = " . MODULE_PAYMENT_COINCORNER_CANCELED_STATUS_ID . " where orders_id = " . intval($order_id));
-      tep_redirect(FILENAME_CHECKOUT_PAYMENT);
-  } else {
-            // Redirect to payment gateway for payment
-            $_SESSION['cart']->reset(true);
-            tep_redirect($response);
-          }
 
+     if($http_status != 200) {
+        tep_db_query("update ". TABLE_ORDERS . " set orders_status = " . MODULE_PAYMENT_COINCORNER_CANCELED_STATUS_ID . " where orders_id = " . intval($order_id));
+        tep_redirect(FILENAME_CHECKOUT_PAYMENT);
+     }
+     else {
+
+        $invoice = explode("/Checkout/", $response);
+
+        if (count($invoice) < 2) {
+          tep_db_query("update ". TABLE_ORDERS . " set orders_status = " . MODULE_PAYMENT_COINCORNER_CANCELED_STATUS_ID . " where orders_id = " . intval($order_id));
+          tep_redirect(FILENAME_CHECKOUT_PAYMENT);
+        } 
+        else {
+          // Redirect to payment gateway for payment
+          $_SESSION['cart']->reset(true);
+          tep_redirect($response);
+        }
+
+     }
+
+    
 
 
     return false;
